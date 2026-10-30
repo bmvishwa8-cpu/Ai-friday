@@ -277,97 +277,215 @@ export function generateSmartDashboardSummary(context: string, prompt: string): 
 }
 
 export function generateSmartAssistantResponse(context: string, prompt: string): string {
-  const text = `${prompt} ${context}`.toLowerCase()
+  const query = prompt.trim().toLowerCase()
 
-  if (text.includes('dashboard') || text.includes('operations') || text.includes('kpi') || text.includes('metric') || text.includes('trend') || text.includes('chart')) {
+  // 1. Specific Match: Knowledge Base & KB Article Creation
+  if (
+    query.includes('kb') ||
+    query.includes('article') ||
+    query.includes('aricke') ||
+    query.includes('articl') ||
+    query.includes('knowledge') ||
+    query.includes('playbook') ||
+    query.includes('sop') ||
+    query.includes('documentation') ||
+    query.includes('unmapped')
+  ) {
     return [
-      '### Operations Dashboard Guide',
-      'The **Operations Dashboard** gives you global visibility into support volume, SLA health, and team capacity:',
-      '- **KPI Metric Cards**: Displays total volume, auto-resolution rate (76.4%), average triage time (3.8 min), and active SLA risks.',
-      '- **7-Day Trend Chart**: Visualizes daily ticket inflow vs. resolved cases to monitor backlog velocity.',
-      '- **Team Workload Breakdown**: Capacity gauges across Tier 1, Database, Identity, Billing, Integrations, and Platform teams.',
-      '- **Live Assignment Log**: Full audit stream showing who was assigned, when, destination team, and reason.',
-      '- **AI Executive Briefing**: Click "AI Executive Briefing" at the top right to generate an instant executive summary.',
+      '### How to Create & Generate Knowledge Base (KB) Articles',
+      'The platform provides two ways to create and manage KB articles:',
       '',
-      '**Navigation Tip**: Click the **"Dashboard"** pill in the top header (or the Dashboard icon in the sidebar) to open this view.',
+      '**Option 1: 1-Click AI Playbook Generator (Recommended)**',
+      '1. Navigate to the **Operations Dashboard** (click "Dashboard" in the top header).',
+      '2. Look for the amber alert banner: **"Unmapped Issue Detected: Need KB article for novel issues"**.',
+      '3. Click **"Generate KB"** — the AI automatically analyzes the incident and synthesizes a complete Standard Operating Playbook containing:',
+      '   - Unique Article ID (e.g. `KB-6382`)',
+      '   - Descriptive Title & Category',
+      '   - Symptoms & Client Impact Summary',
+      '   - Technical Root Cause Diagnosis',
+      '   - 4-Step Remediation Checklist',
+      '   - Search Keywords & Relevance Score (e.g. 95%)',
+      '4. Review the generated playbook and click **"Publish & Link to Ticket"** to permanently store it.',
+      '',
+      '**Option 2: Browse & Search Existing KB Articles**',
+      '1. Navigate to **Data Tables Hub** (click "Data Tables" in the top header).',
+      '2. Select **Tab 5: "KB & AI Signals"**.',
+      '3. Here you can search, filter, and inspect all published playbooks and AI detection rules.',
+      '',
+      '**In Triage Desk**: Whenever you open an incoming ticket, the right-hand panel automatically surfaces "Similar Knowledge Content" with relevance match scores so you can apply known solutions instantly.',
     ].join('\n')
   }
 
-  if (text.includes('table') || text.includes('hub') || text.includes('open') || text.includes('account') || text.includes('list') || text.includes('filter')) {
+  // 2. Specific Match: Navigating to Dashboard & Viewing Metrics
+  if (
+    query.includes('dashboard') ||
+    query.includes('dashot') ||
+    query.includes('dashb') ||
+    query.includes('dash') ||
+    query.includes('operations view') ||
+    query.includes('metric') ||
+    query.includes('trend') ||
+    query.includes('kpi') ||
+    query.includes('chart') ||
+    query.includes('capacity')
+  ) {
     return [
-      '### Data Tables Hub Guide',
-      'The **Data Tables Hub** separates ticket and customer portfolio data into 5 focused tables:',
-      '1. **Open Queue**: Active unreviewed tickets with priority, channel, and age.',
-      '2. **Routed & Assigned**: Dispatched tickets with assigned specialist names and confidence scores.',
-      '3. **Escalated Cases**: High-priority incidents with SLA breach timers and dedicated CSM alerts.',
+      '### How to Navigate to the Operations Dashboard & View Metrics',
+      'To open the Operations Dashboard:',
+      '1. Click the **"Dashboard"** button in the top navigation bar (or use the quick switch button below).',
+      '',
+      '**What You Will See in the Dashboard:**',
+      '- **Top KPI Cards**: Total Ticket Inflow (with weekly trend %), SLA Compliance Rate (96.8% under 1-hour target), Average Time to Assignment (4.2m with AI), and Critical Escalation counts.',
+      '- **7-Day Trend Chart**: Visualizes daily incoming tickets vs. resolved cases to monitor backlog velocity.',
+      '- **Team Capacity Gauges**: Real-time capacity breakdown across Tier 1, Database DBA, IAM Identity, Billing, Integrations, and Platform teams.',
+      '- **Live Assignment Audit Stream**: Real-time log showing when each ticket was routed, to whom, and the AI justification.',
+      '- **AI Executive Briefing**: Click the **"AI Executive Briefing"** button in the dashboard header to generate an instant leadership summary with system health, risk bottlenecks, and recommendations.',
+    ].join('\n')
+  }
+
+  // 3. Specific Match: Navigating to Data Tables Hub
+  if (
+    query.includes('table') ||
+    query.includes('hub') ||
+    query.includes('open queue') ||
+    query.includes('account') ||
+    query.includes('escalated') ||
+    query.includes('routed') ||
+    query.includes('filter') ||
+    query.includes('search')
+  ) {
+    return [
+      '### How to Navigate the Data Tables Hub',
+      'The **Data Tables Hub** organizes all enterprise support data into 5 live tables:',
+      '1. **Open Queue**: Active, unassigned/unreviewed tickets with severity tags and wait times.',
+      '2. **Routed & Assigned**: Dispatched tickets with assigned specialist names and routing confidence scores.',
+      '3. **Escalated Cases**: Critical high-priority incidents with SLA breach countdowns.',
       '4. **Accounts & SLA**: Enterprise customer portfolio with health metrics, MRR, and plan tiers.',
       '5. **KB & AI Signals**: Knowledge base articles and automatic signal detection rules.',
       '',
-      '**Navigation Tip**: Click the **"Data Tables"** pill in the top header to browse all tables.',
+      '**How to Navigate**: Click the **"Data Tables"** button in the top header. You can search, filter by priority, sort columns, or click **"Ask AI Table Insights"** for an executive analysis of any table.',
     ].join('\n')
   }
 
-  if (text.includes('triage') || text.includes('desk') || text.includes('workspace') || text.includes('draft') || text.includes('review') || text.includes('approve')) {
+  // 4. Specific Match: Triage Desk, AI Analysis, Approving & Routing
+  if (
+    query.includes('triage') ||
+    query.includes('desk') ||
+    query.includes('analyze') ||
+    query.includes('draft') ||
+    query.includes('approve') ||
+    query.includes('route') ||
+    query.includes('escalate')
+  ) {
     return [
-      '### Triage Desk Guide',
-      'The **Triage Desk** is your single-ticket review workspace:',
-      '- **Original Request**: Customer message, priority tags, and attached error screenshots.',
-      '- **AI Auto-Classification**: Product and module tags with confidence scores.',
-      '- **Routing Recommendation**: AI recommended team with assigned specialist handler and timestamp.',
-      '- **Customer Reply Draft**: AI-generated empathetic customer draft you can edit and approve in 1 click.',
-      '- **Action Bar**: Use "Approve & Send" to dispatch the draft, or "Escalate" for engineering handoff.',
-      '',
-      '**Navigation Tip**: Click the **"Triage Desk"** pill in the top header to return to ticket triage.',
+      '### How to Triage & Approve Tickets in Triage Desk',
+      'The **Triage Desk** is your primary incident investigation workspace:',
+      '1. **Select a Ticket**: Click any ticket in the left-hand queue.',
+      '2. **Run AI Analysis**: Click the **"AI Analysis"** button in the Original Request panel.',
+      '   - The AI identifies the root cause and suggests the best specialized team.',
+      '   - It auto-populates the **"Route to"** selector with the suggested team (e.g. Tier 2 - Integrations Team).',
+      '   - It updates the assignment with a specialist lead (e.g. Samir Gupta).',
+      '   - It auto-populates the **AI Drafted Response** with the routing team, specialist name, and technical diagnosis.',
+      '3. **Review & Edit**: You can edit the draft response by clicking **"Edit Draft"**.',
+      '4. **Approve & Dispatch**: Click the blue **"Approve & Route"** button in the bottom action bar to route the ticket and send the response.',
     ].join('\n')
   }
 
-  if (text.includes('critical') || text.includes('high') || text.includes('urgent') || text.includes('sla') || text.includes('p1')) {
+  // 5. Specific Match: AI Settings & OpenAI Configuration
+  if (
+    query.includes('ai setting') ||
+    query.includes('api key') ||
+    query.includes('openai') ||
+    query.includes('model') ||
+    query.includes('token') ||
+    query.includes('configure') ||
+    query.includes('key')
+  ) {
     return [
-      '### Critical & High Priority Incidents',
-      'The following high-priority incidents currently require immediate action:',
-      '- **TCK-48213**: Production database replication lag exceeding 15 minutes (Customer: Northwind Logistics, Plan: Enterprise, Assigned: Dave Chen).',
-      '- **TCK-39201**: SAML SSO redirect loop after Okta certificate rotation (Customer: Helix Health, Plan: Enterprise, Assigned: Maya Patel).',
-      '',
-      '**Navigation Tip**: You can select either ticket in the left-hand Queue list or in the "Escalated Cases" tab in Data Tables.',
+      '### How to Configure AI API Keys & Models',
+      'You can connect OpenAI or custom LLM endpoints directly in the app:',
+      '1. Click the **"AI Settings"** (Gear icon) in the top navigation header.',
+      '2. Choose your provider:',
+      '   - **OpenAI (Official)**: Enter your OpenAI API key (`sk-...`) to use native `gpt-4o` or `gpt-4o-mini`.',
+      '   - **TCS GenAI Lab**: Use enterprise gateway models.',
+      '   - **Custom Endpoint**: Connect Azure OpenAI, Ollama, or private LLM proxies.',
+      '3. Click **"Test Connection"** to verify your credentials.',
+      '4. Click **"Save & Apply"**. All features across the platform will immediately use your configured model in real time!',
     ].join('\n')
   }
 
-  if (text.includes('kb') || text.includes('article') || text.includes('knowledge') || text.includes('playbook') || text.includes('unmapped')) {
+  // 6. Specific Match: Creating a Support Ticket
+  if (
+    query.includes('create') ||
+    query.includes('new ticket') ||
+    query.includes('compose') ||
+    query.includes('add ticket')
+  ) {
     return [
-      '### Knowledge Base & 1-Click Playbook Generator',
-      'When an incoming ticket reports a new or unmapped issue with no existing KB article:',
-      '1. Open the **Operations Dashboard**.',
-      '2. Look for the amber alert banner: **"Unmapped Issue Detected"**.',
-      '3. Click **"Generate KB"** — the AI will draft a complete playbook with ID, title, root cause, symptoms, step-by-step checklist, and search keywords.',
-      '4. Review the generated playbook and click **"Publish & Link to Ticket"**.',
-      '',
-      '**Navigation Tip**: Switch to the **Dashboard** view to try the KB generator.',
+      '### How to Create a New Support Ticket',
+      'To log an incoming customer request:',
+      '1. Click the **"+ New Ticket"** button located in the ticket queue header (or in the Data Tables header).',
+      '2. Fill in the Customer Name, Company, Priority Severity (Low, Medium, High), and Channel.',
+      '3. Write the issue description, or upload/paste an error screenshot.',
+      '4. Click **"Analyze with AI"** to generate an automated problem assessment, or click **"Create Ticket"** to add it directly to the active queue.',
     ].join('\n')
   }
 
-  if (text.includes('create') || text.includes('new ticket') || text.includes('compose')) {
+  // 7. Specific Match: SLA, Urgency & Escalation Rules
+  if (
+    query.includes('sla') ||
+    query.includes('urgent') ||
+    query.includes('critical') ||
+    query.includes('p1') ||
+    query.includes('breach')
+  ) {
     return [
-      '### Creating a Support Ticket',
-      'To log a new incoming support request:',
-      '1. Click the **"+ New Ticket"** button in the queue header.',
-      '2. Enter customer email, subject, priority severity, channel, and issue description.',
-      '3. You can also paste an image URL or upload an error screenshot.',
-      '4. The ticket will immediately be ingested and auto-classified by the AI engine.',
-      '',
-      '**Tip**: Click the quick action button below to compose a ticket right away.',
+      '### SLA Compliance & Critical Incident Handling',
+      'The platform enforces enterprise SLA policies across all tiers:',
+      '- **Enterprise Tier Target**: First response under 15 minutes; resolution under 1 hour.',
+      '- **Standard Tier Target**: First response under 1 hour; resolution under 4 hours.',
+      '- **Active Critical Incidents**:',
+      '  - **TCK-48213**: PostgreSQL replication lag on db-replica-02 (Assigned: Dave Chen, Senior DBA).',
+      '  - **TCK-39201**: SAML SSO redirect loop after Okta certificate rotation (Assigned: Maya Patel, IAM Specialist).',
+      '- **Escalation**: Click **"Escalate"** in the bottom action bar to trigger an immediate on-call pager alert.',
     ].join('\n')
   }
 
-  // General assistant walkthrough
+  // 8. Specific Match: Teams & Specialists
+  if (
+    query.includes('team') ||
+    query.includes('specialist') ||
+    query.includes('who') ||
+    query.includes('dave') ||
+    query.includes('maya') ||
+    query.includes('samir') ||
+    query.includes('jordan')
+  ) {
+    return [
+      '### Specialized Support Teams & Assigned Handlers',
+      'The AI routes incoming tickets to 6 specialized teams based on technical domain:',
+      '1. **Tier 1 - General Support**: Handled by *Alex Rivera* (Routine configuration, password resets).',
+      '2. **Tier 2 - Database Team**: Handled by *Dave Chen (Senior DBA)* (Replication lag, WAL spikes, index locks).',
+      '3. **Tier 2 - Identity & Access**: Handled by *Maya Patel (IAM Specialist)* (Okta SSO, SAML certs, RBAC).',
+      '4. **Tier 2 - Billing Operations**: Handled by *Jordan Taylor (Billing Lead)* (Stripe webhooks, invoice sync).',
+      '5. **Tier 2 - Integrations Team**: Handled by *Samir Gupta (API Eng)* (Salesforce 401s, REST webhooks).',
+      '6. **Tier 3 - Platform Engineering**: Handled by *Staff On-Call Lead* (Zero-day defects, cluster outages).',
+    ].join('\n')
+  }
+
+  // 9. Contextual Dynamic Answer Generator for any other question
   return [
-    '### AI Support Operations Assistant',
-    'I can help you navigate and master this triage platform:',
-    '- **Triage Desk**: Review single tickets, inspect screenshots, and approve customer reply drafts.',
-    '- **Data Tables Hub**: Explore 5 specialized tables (Open, Routed, Escalated, Accounts, KB).',
-    '- **Operations Dashboard**: Monitor SLA compliance, 7-day volume trends, team workloads, and generate KB articles.',
-    '- **AI Smart Routing**: Automatically routes tickets to Tier 1, Database, Identity, Billing, or Integrations with assigned specialists and timestamps.',
+    `### AI Support Copilot: ${prompt.trim()}`,
+    `You asked: "${prompt.trim()}". Here is guidance for your request:`,
     '',
-    'How can I help you right now? Feel free to ask how to navigate, triage, or resolve any ticket!',
+    '- **Active View**: You are currently in the **' + (context.includes('workspace') ? 'Triage Desk' : context.includes('tables') ? 'Data Tables' : 'Operations Dashboard') + '** view.',
+    '- **Workflow Options**:',
+    '  1. **Triage Desk**: Inspect ticket details, view AI recommendations, and approve customer response drafts.',
+    '  2. **Data Tables**: Search and filter through the 5 operational tables (Open, Routed, Escalated, Accounts, KB).',
+    '  3. **Operations Dashboard**: View global metrics, team capacity gauges, and generate KB playbooks or Executive Briefings.',
+    '  4. **AI Settings**: Click the gear icon in the header to configure your OpenAI API key for live GPT-4o inference.',
+    '',
+    'Feel free to ask a specific question like: *"How to create KB article?"*, *"Where is the dashboard?"*, or *"Show critical SLA tickets"*!',
   ].join('\n')
 }
 

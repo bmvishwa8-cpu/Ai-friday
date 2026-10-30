@@ -120,11 +120,36 @@ function HomeAssistant({
     // Check if the user is asking to navigate directly
     const lower = trimmed.toLowerCase()
     let actionView: 'workspace' | 'tables' | 'dashboard' | undefined
-    if (lower.includes('dashboard') || lower.includes('metric') || lower.includes('chart') || lower.includes('operations')) {
+    if (
+      lower.includes('dashboard') ||
+      lower.includes('dashot') ||
+      lower.includes('dashb') ||
+      lower.includes('dash') ||
+      lower.includes('metric') ||
+      lower.includes('chart') ||
+      lower.includes('operations') ||
+      lower.includes('kb') ||
+      lower.includes('article') ||
+      lower.includes('aricke') ||
+      lower.includes('articl') ||
+      lower.includes('playbook')
+    ) {
       actionView = 'dashboard'
-    } else if (lower.includes('table') || lower.includes('data table') || lower.includes('account') || lower.includes('hub')) {
+    } else if (
+      lower.includes('table') ||
+      lower.includes('tabl') ||
+      lower.includes('data table') ||
+      lower.includes('account') ||
+      lower.includes('hub')
+    ) {
       actionView = 'tables'
-    } else if (lower.includes('triage') || lower.includes('desk') || lower.includes('workspace') || lower.includes('queue')) {
+    } else if (
+      lower.includes('triage') ||
+      lower.includes('triag') ||
+      lower.includes('desk') ||
+      lower.includes('workspace') ||
+      lower.includes('queue')
+    ) {
       actionView = 'workspace'
     }
 
