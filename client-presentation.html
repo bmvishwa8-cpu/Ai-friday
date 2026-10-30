@@ -1,0 +1,607 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>AI Support Triage Dashboard - Client Presentation</title>
+    <style>
+      :root {
+        --bg: #0b1220;
+        --panel: #111b2d;
+        --panel-2: #16233c;
+        --card: #f6f8fc;
+        --text: #0f172a;
+        --muted: #475569;
+        --primary: #2563eb;
+        --primary-2: #60a5fa;
+        --green: #26a69a;
+        --amber: #f59e0b;
+        --red: #ef4444;
+        --white: #ffffff;
+        --line: rgba(148, 163, 184, 0.25);
+      }
+
+      * { box-sizing: border-box; }
+
+      html, body {
+        margin: 0;
+        height: 100%;
+        font-family: "Segoe UI", Arial, sans-serif;
+        background: linear-gradient(135deg, #0b1220, #16233c);
+        color: var(--white);
+      }
+
+      body {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        overflow: hidden;
+      }
+
+      .deck {
+        position: relative;
+        width: min(1400px, 94vw);
+        height: min(820px, 92vh);
+        border-radius: 24px;
+        overflow: hidden;
+        background: linear-gradient(180deg, rgba(15, 23, 42, 0.92), rgba(17, 27, 45, 0.98));
+        border: 1px solid rgba(255,255,255,0.08);
+        box-shadow: 0 30px 80px rgba(2, 6, 23, 0.55);
+      }
+
+      .slide {
+        position: absolute;
+        inset: 0;
+        padding: 54px 72px 60px;
+        opacity: 0;
+        transform: translateX(30px);
+        transition: opacity 0.35s ease, transform 0.35s ease;
+        pointer-events: none;
+        display: flex;
+        flex-direction: column;
+      }
+
+      .slide.active {
+        opacity: 1;
+        transform: translateX(0);
+        pointer-events: auto;
+      }
+
+      .eyebrow {
+        color: #9db7ff;
+        letter-spacing: 0.18em;
+        text-transform: uppercase;
+        font-size: 12px;
+        font-weight: 700;
+        margin-bottom: 18px;
+      }
+
+      h1, h2, h3, p {
+        margin: 0;
+      }
+
+      h1 {
+        font-size: clamp(2.3rem, 4vw, 4rem);
+        line-height: 1.08;
+        letter-spacing: -0.04em;
+      }
+
+      h2 {
+        font-size: clamp(2rem, 2.5vw, 3rem);
+        line-height: 1.15;
+        letter-spacing: -0.04em;
+      }
+
+      h3 {
+        font-size: 1.4rem;
+        margin-bottom: 14px;
+      }
+
+      p, li {
+        font-size: 1.08rem;
+        line-height: 1.7;
+        color: rgba(255,255,255,0.82);
+      }
+
+      .subtitle {
+        margin-top: 18px;
+        max-width: 760px;
+        color: rgba(255,255,255,0.75);
+        font-size: 1.15rem;
+      }
+
+      .grid-2 {
+        display: grid;
+        grid-template-columns: 1.1fr 0.9fr;
+        gap: 28px;
+        height: 100%;
+        align-items: center;
+      }
+
+      .grid-3 {
+        display: grid;
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        gap: 22px;
+        margin-top: 22px;
+      }
+
+      .card {
+        background: rgba(255,255,255,0.04);
+        border: 1px solid var(--line);
+        border-radius: 18px;
+        padding: 20px 20px 18px;
+      }
+
+      .stat {
+        background: rgba(96, 165, 250, 0.08);
+        border: 1px solid rgba(96, 165, 250, 0.18);
+        border-radius: 18px;
+        padding: 18px 20px;
+      }
+
+      .stat strong {
+        display: block;
+        font-size: 2.2rem;
+        line-height: 1;
+        margin-bottom: 10px;
+        color: #dfeaff;
+      }
+
+      ul {
+        margin: 18px 0 0 22px;
+        padding: 0;
+      }
+
+      .hero-badges {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 12px;
+        margin-top: 30px;
+      }
+
+      .badge {
+        border-radius: 999px;
+        padding: 9px 14px;
+        font-size: 0.88rem;
+        background: rgba(255,255,255,0.06);
+        border: 1px solid rgba(255,255,255,0.1);
+        color: rgba(255,255,255,0.85);
+      }
+
+      .diagram {
+        background: linear-gradient(180deg, rgba(12, 18, 35, 0.9), rgba(20, 28, 44, 1));
+        border: 1px solid var(--line);
+        border-radius: 18px;
+        padding: 20px;
+      }
+
+      .flow {
+        display: flex;
+        flex-direction: column;
+        gap: 12px;
+      }
+
+      .step {
+        display: flex;
+        align-items: center;
+        gap: 14px;
+        padding: 12px 16px;
+        border-radius: 12px;
+        background: rgba(255,255,255,0.03);
+        border: 1px solid rgba(255,255,255,0.08);
+      }
+
+      .step-index {
+        display: inline-flex;
+        width: 28px;
+        height: 28px;
+        align-items: center;
+        justify-content: center;
+        border-radius: 50%;
+        background: rgba(96,165,250,0.18);
+        color: #dceafc;
+        font-weight: 700;
+        font-size: 0.9rem;
+      }
+
+      .timeline {
+        display: flex;
+        flex-direction: column;
+        gap: 16px;
+        margin-top: 18px;
+      }
+
+      .timeline-item {
+        display: grid;
+        grid-template-columns: 70px 1fr;
+        gap: 18px;
+        align-items: start;
+      }
+
+      .timeline-time {
+        color: #a5b4fc;
+        font-weight: 700;
+      }
+
+      .timeline-content {
+        background: rgba(255,255,255,0.03);
+        border: 1px solid rgba(255,255,255,0.08);
+        border-radius: 14px;
+        padding: 14px 16px;
+      }
+
+      .footer-controls {
+        position: absolute;
+        right: 18px;
+        bottom: 18px;
+        display: flex;
+        gap: 10px;
+        align-items: center;
+      }
+
+      .nav-btn {
+        appearance: none;
+        border: 1px solid rgba(255,255,255,0.12);
+        background: rgba(255,255,255,0.04);
+        color: white;
+        width: 42px;
+        height: 42px;
+        border-radius: 12px;
+        font-size: 1.2rem;
+        cursor: pointer;
+      }
+
+      .nav-btn:hover {
+        background: rgba(255,255,255,0.07);
+      }
+
+      .page-indicator {
+        color: rgba(255,255,255,0.7);
+        font-size: 0.86rem;
+        margin-right: 8px;
+      }
+
+      .highlight {
+        color: #b7d4ff;
+      }
+
+      .small {
+        font-size: 0.9rem;
+      }
+
+      .quote {
+        font-size: clamp(1.3rem, 2vw, 2rem);
+        line-height: 1.4;
+        color: rgba(255,255,255,0.92);
+      }
+
+      @media (max-width: 980px) {
+        .slide { padding: 42px 26px 56px; }
+        .grid-2, .grid-3 { grid-template-columns: 1fr; }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="deck" id="deck">
+      <section class="slide active">
+        <div class="eyebrow">Client Presentation</div>
+        <h1>AI Support Triage Dashboard</h1>
+        <p class="subtitle">
+          A smart operational platform that helps support teams handle incoming customer issues faster,
+          prioritize critical incidents, and turn support queues into an intelligent decision system.
+        </p>
+        <div class="hero-badges">
+          <span class="badge">AI Ticket Analysis</span>
+          <span class="badge">Screenshot-based issue review</span>
+          <span class="badge">Support workflow automation</span>
+          <span class="badge">Dashboard intelligence</span>
+        </div>
+        <div class="grid-3" style="margin-top: 48px;">
+          <div class="stat">
+            <strong>24/7</strong>
+            <p>Always-on support triage coverage</p>
+          </div>
+          <div class="stat">
+            <strong>Faster</strong>
+            <p>Faster prioritization and routing</p>
+          </div>
+          <div class="stat">
+            <strong>Smarter</strong>
+            <p>Smarter handling with AI-generated insights</p>
+          </div>
+        </div>
+      </section>
+
+      <section class="slide">
+        <div class="eyebrow">01 • Problem</div>
+        <h2>Support teams are overwhelmed by ticket volume and fragmented workflows.</h2>
+        <div class="grid-2" style="margin-top: 26px;">
+          <div>
+            <ul>
+              <li>High volume of incoming issues across email, portal, and chat.</li>
+              <li>Agents spend time manually reading the ticket and identifying severity.</li>
+              <li>Screenshot or error image details are often missed or require manual interpretation.</li>
+              <li>There is no single place to review trends, backlog, and operational performance.</li>
+              <li>Customers face slower response times and inconsistent support quality.</li>
+            </ul>
+          </div>
+          <div class="diagram">
+            <div class="flow">
+              <div class="step"><span class="step-index">1</span><span>Ticket arrives from multiple channels</span></div>
+              <div class="step"><span class="step-index">2</span><span>Manual triage and classification</span></div>
+              <div class="step"><span class="step-index">3</span><span>Delay in root cause understanding</span></div>
+              <div class="step"><span class="step-index">4</span><span>Slow routing and response</span></div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="slide">
+        <div class="eyebrow">02 • Use Case</div>
+        <h2>Use case: intelligent support operations for customer-facing digital products.</h2>
+        <div class="grid-2" style="margin-top: 22px;">
+          <div class="card">
+            <h3>Who uses it?</h3>
+            <p>
+              Support agents, team leads, triage managers, and operations teams working in SaaS, enterprise software,
+              e-commerce, fintech, and internal IT environments.
+            </p>
+          </div>
+          <div class="card">
+            <h3>Business scenario</h3>
+            <p>
+              A business receives a large number of customer issues every day. The team needs a way to prioritize urgent
+              issues, understand the root cause quickly, and create consistent customer responses.
+            </p>
+          </div>
+        </div>
+        <ul>
+          <li>Customer submits a bug report with a screenshot or detailed description.</li>
+          <li>AI identifies the likely issue, severity, and probable category.</li>
+          <li>Operations team sees trends and workload in real-time through a dashboard.</li>
+          <li>Agents can create a better support draft or route the case to the right queue.</li>
+        </ul>
+      </section>
+
+      <section class="slide">
+        <div class="eyebrow">03 • Product Value</div>
+        <h2>What this application solves.</h2>
+        <div class="grid-3">
+          <div class="card">
+            <h3>Operational speed</h3>
+            <p>Reduces manual triage effort and helps agents act on the most critical tickets first.</p>
+          </div>
+          <div class="card">
+            <h3>Better accuracy</h3>
+            <p>AI analyzes descriptions and images to surface root causes, issue patterns, and probable next steps.</p>
+          </div>
+          <div class="card">
+            <h3>Improved customer experience</h3>
+            <p>Faster response and clearer communication helps avoid resolution delays and churn risk.</p>
+          </div>
+        </div>
+        <div class="card" style="margin-top: 24px;">
+          <p>
+            In practical terms, the platform turns raw incident data into a guided support workflow with route classification,
+            AI insights, and business-level reporting for leadership.
+          </p>
+        </div>
+      </section>
+
+      <section class="slide">
+        <div class="eyebrow">04 • Core Features</div>
+        <h2>Built to support the real daily support flow.</h2>
+        <div class="grid-3">
+          <div class="card">
+            <h3>Ticket Queue</h3>
+            <p>Displays incoming tickets with severity, customer context, and status.</p>
+          </div>
+          <div class="card">
+            <h3>AI Ticket Analysis</h3>
+            <p>Reads the request and optional screenshot to identify likely root cause and recommended response.</p>
+          </div>
+          <div class="card">
+            <h3>Ticket Creation</h3>
+            <p>Supports new issue intake with rich fields, screenshot upload, and structured data capture.</p>
+          </div>
+          <div class="card">
+            <h3>Smart Routing</h3>
+            <p>Routes issues to the right team based on category, backlog, and severity logic.</p>
+          </div>
+          <div class="card">
+            <h3>Knowledge-based reference</h3>
+            <p>Helps agents leverage past troubleshooting patterns and known issues.</p>
+          </div>
+          <div class="card">
+            <h3>Dashboard analytics</h3>
+            <p>Shows ticket trends, time saved, priority mix, and volume patterns across a reporting period.</p>
+          </div>
+        </div>
+      </section>
+
+      <section class="slide">
+        <div class="eyebrow">05 • AI Workflow</div>
+        <h2>The platform uses AI at every meaningful support decision point.</h2>
+        <div class="timeline">
+          <div class="timeline-item">
+            <div class="timeline-time">Step 1</div>
+            <div class="timeline-content">
+              A ticket is created with customer information, issue description, and optional screenshot image.
+            </div>
+          </div>
+          <div class="timeline-item">
+            <div class="timeline-time">Step 2</div>
+            <div class="timeline-content">
+              The system sends the request and image to the configured AI model through the backend API endpoint.
+            </div>
+          </div>
+          <div class="timeline-item">
+            <div class="timeline-time">Step 3</div>
+            <div class="timeline-content">
+              AI identifies root cause, urgency level, probable service impact, and suggests customer-ready wording.
+            </div>
+          </div>
+          <div class="timeline-item">
+            <div class="timeline-time">Step 4</div>
+            <div class="timeline-content">
+              The support agent reviews the response, edits if needed, and sends or routes the ticket with confidence.
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="slide">
+        <div class="eyebrow">06 • How the app works</div>
+        <h2>End-to-end user journey.</h2>
+        <div class="grid-2" style="margin-top: 18px;">
+          <div class="diagram">
+            <div class="flow">
+              <div class="step"><span class="step-index">1</span><span>Customer reports issue through portal / email</span></div>
+              <div class="step"><span class="step-index">2</span><span>System collects metadata and screenshot</span></div>
+              <div class="step"><span class="step-index">3</span><span>AI classifies topic, severity, and likely cause</span></div>
+              <div class="step"><span class="step-index">4</span><span>Agent reviews queue, drafts response, routes case</span></div>
+              <div class="step"><span class="step-index">5</span><span>Leadership reviews trends and saves time</span></div>
+            </div>
+          </div>
+          <div>
+            <p>
+              This is especially valuable for teams dealing with high-volume customer support or recurring product defects.
+              Instead of manually reading every issue and building the same response patterns repeatedly, the AI acts as a
+              triage assistant and writing companion.
+            </p>
+            <p style="margin-top: 18px;">
+              It is not just a chatbot; it is a workflow optimization layer for support operations.
+            </p>
+          </div>
+        </div>
+      </section>
+
+      <section class="slide">
+        <div class="eyebrow">07 • Dashboard & Business Intelligence</div>
+        <h2>Leadership can see the operational picture in one view.</h2>
+        <div class="grid-2" style="margin-top: 20px;">
+          <div>
+            <ul>
+              <li>Ticket volume trends over time</li>
+              <li>Priority distribution across high/medium/low cases</li>
+              <li>Estimated time saved through automation</li>
+              <li>Problem clusters and recurring customer pain points</li>
+              <li>Operational pacing and service-health gaps</li>
+            </ul>
+          </div>
+          <div class="card">
+            <h3>Business impact</h3>
+            <p>
+              The dashboard gives management visibility into whether the support workload is rising, stabilizing, or becoming
+              more complex. It also makes it easier to justify process changes, staffing needs, and automation investment.
+            </p>
+          </div>
+        </div>
+      </section>
+
+      <section class="slide">
+        <div class="eyebrow">08 • Why this matters</div>
+        <h2>Strategic value for the client.</h2>
+        <p class="quote" style="margin-top: 26px;">
+          “This is not just a support tool — it is a decision-support system that improves response quality,
+          reduces manual effort, and gives teams a real-time operational pulse.”
+        </p>
+        <div class="grid-3" style="margin-top: 34px;">
+          <div class="card">
+            <h3>For support teams</h3>
+            <p>Less time spent triaging, more time solving customer issues.</p>
+          </div>
+          <div class="card">
+            <h3>For leadership</h3>
+            <p>Better operational visibility and measurable support efficiency gains.</p>
+          </div>
+          <div class="card">
+            <h3>For customers</h3>
+            <p>Faster acknowledgment, clearer updates, and better resolution quality.</p>
+          </div>
+        </div>
+      </section>
+
+      <section class="slide">
+        <div class="eyebrow">09 • Recommended next steps</div>
+        <h2>How to move from prototype to production.</h2>
+        <ul>
+          <li>Connect real customer ticket data sources and support workflows.</li>
+          <li>Define routing rules and escalation paths for each business area.</li>
+          <li>Train the AI model on business-specific terminology and past issue categories.</li>
+          <li>Enable image-based inference for visual bug reports and UI errors.</li>
+          <li>Measure KPIs such as response time, resolution time, and ticket deflection rate.</li>
+          <li>Expand into knowledge automation, internal operations summaries, and sentiment tracking.</li>
+        </ul>
+        <div class="card" style="margin-top: 26px;">
+          <p>
+            The current demo already proves the core concept: AI + business workflow + dashboard intelligence creates a strong
+            support operations platform with visible value from the first release.
+          </p>
+        </div>
+      </section>
+
+      <section class="slide">
+        <div class="eyebrow">10 • Closing</div>
+        <h2>Summary</h2>
+        <p class="subtitle">
+          This application is a practical AI-powered support triage and operations dashboard designed to reduce team overload,
+          improve customer experience, and give teams faster insight into service health and issue patterns.
+        </p>
+        <div class="hero-badges">
+          <span class="badge">Problem solver</span>
+          <span class="badge">Workflow automation</span>
+          <span class="badge">AI productivity</span>
+          <span class="badge">Operational visibility</span>
+        </div>
+        <div class="card" style="margin-top: 30px;">
+          <p>
+            <span class="highlight">Final message:</span> this solution combines support process efficiency with AI intelligence,
+            creating a compelling business case for digital service teams that want to improve both speed and quality.
+          </p>
+        </div>
+      </section>
+
+      <div class="footer-controls">
+        <span class="page-indicator" id="pageIndicator">1 / 10</span>
+        <button class="nav-btn" id="prevBtn" aria-label="Previous slide">←</button>
+        <button class="nav-btn" id="nextBtn" aria-label="Next slide">→</button>
+      </div>
+    </div>
+
+    <script>
+      const slides = Array.from(document.querySelectorAll('.slide'));
+      let currentIndex = 0;
+
+      function updateSlide() {
+        slides.forEach((slide, index) => {
+          slide.classList.toggle('active', index === currentIndex);
+        });
+        document.getElementById('pageIndicator').textContent = `${currentIndex + 1} / ${slides.length}`;
+      }
+
+      document.getElementById('nextBtn').addEventListener('click', () => {
+        currentIndex = Math.min(currentIndex + 1, slides.length - 1);
+        updateSlide();
+      });
+
+      document.getElementById('prevBtn').addEventListener('click', () => {
+        currentIndex = Math.max(currentIndex - 1, 0);
+        updateSlide();
+      });
+
+      document.addEventListener('keydown', (event) => {
+        if (event.key === 'ArrowRight' || event.key === 'PageDown' || event.key === ' ') {
+          currentIndex = Math.min(currentIndex + 1, slides.length - 1);
+          updateSlide();
+        }
+        if (event.key === 'ArrowLeft' || event.key === 'PageUp') {
+          currentIndex = Math.max(currentIndex - 1, 0);
+          updateSlide();
+        }
+      });
+
+      updateSlide();
+    </script>
+  </body>
+</html>
